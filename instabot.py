@@ -1,5 +1,8 @@
 # Importing requests library to facilitate the access of data in our program from the internet
 import requests
+# Importing Textblob library to analyze and delete negative comments
+from textblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
 import urllib
 
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
@@ -149,6 +152,36 @@ def post_a_comment(username):
         print("Unable to add comment. Try again!")
 
 
+# Defining a function to delete negative comments from the recent post of a user
+def delete_negative_comment(username):
+    media_id = get_post_id(username)
+    req_url = BASE_URL + 'media/' + media_id + '/comments/?access_token=%s' + ACCESS_TOKEN
+    comment_info = requests.get(req_url).json()
+
+    if comment_info['meta']['code'] == 200:
+        if len(comment_info['data']):
+            for x in range(0, len(comment_info['data'])):
+                comment_id = comment_info['data'][x]['id']
+                comment_text = comment_info['data'][x]['text']
+                blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
+                if blob.sentiment.p_neg > blob.sentiment.p_pos:
+                    print('Negative comment : ' + comment_text)
+                    delete_url = BASE_URL + 'media/' + media_id + '/comments/' + comment_id + '/?access_token=' + \
+                                 ACCESS_TOKEN
+                    delete_info = requests.delete(delete_url).json()
+
+                    if delete_info['meta']['code'] == 200:
+                        print('Comment successfully deleted!\n')
+                    else:
+                        print('Unable to delete comment!')
+                else:
+                    print('Positive comment : ' + comment_text + '\n')
+        else:
+            print('There are no existing comments on the post!')
+    else:
+        print('Status code other than 200 received!')
+
+
 # Defining the menu function of the instabot
 def instabot():
     while True:
@@ -161,6 +194,8 @@ def instabot():
         print('4. Get the recent post of a user by username')
         print('5. Like the recent post of a user')
         print('6. Comment on the recent post of a user')
+        print('7. Delete negative comments from the recent pot of a user')
+        print('8. Exit')
 
         choice = eval(input('Enter your choice : '))
         if choice == 1:
@@ -184,6 +219,13 @@ def instabot():
         elif choice == 6:
             name = input('Enter the username')
             post_a_comment(name)
+
+        elif choice == 7:
+            name = input('Enter the username')
+            delete_negative_comment(name)
+
+        elif choice == 8:
+            exit()
 
         else:
             print('You did not enter a valid choice')
