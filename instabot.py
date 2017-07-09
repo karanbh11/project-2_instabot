@@ -2,7 +2,6 @@
 import requests
 import urllib
 
-
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
 ACCESS_TOKEN = '745963540.3ed3194.7c6b0edac759468fbc4eed4671259161'
 BASE_URL = 'https://api.instagram.com/v1/'
@@ -103,6 +102,40 @@ def get_user_post(username):
         print('Status code other than 200 received!')
 
 
+# Defining a function to get the media_id of the recent post of a user
+def get_post_id(username):
+    user_id = get_user_id(username)
+    if user_id is None:
+        print('User does not exist!')
+        exit()
+    req_url = BASE_URL + 'users/' + user_id + '/media/recent/?access_token=' + ACCESS_TOKEN
+    user_media = requests.get(req_url).json()
+
+    if user_media['meta']['code'] == 200:
+        if len(user_media['data']):
+            return user_media['data'][0]['id']
+        else:
+            print('There is no recent post of the user!')
+            exit()
+    else:
+        print('Status code other than 200 received!')
+        exit()
+
+
+# Defining the function to like the recent post of a user
+def like_post(username):
+    media_id = get_post_id(username)
+    req_url = BASE_URL + 'media/' + media_id + '/likes'
+    print(req_url)
+    payload = {"access_token": ACCESS_TOKEN}
+    post_a_like = requests.post(req_url, payload).json()
+    if post_a_like['meta']['code'] == 200:
+        print('Like was successful!')
+    else:
+        print('Your like was unsuccessful. Try again!')
+
+
+
 # Defining the menu function of the instabot
 def instabot():
     while True:
@@ -113,7 +146,7 @@ def instabot():
         print('2. Get details of another user by username')
         print('3. Get your own recent post')
         print('4. Get the recent post of a user by username')
-
+        print('5. Like the recent post of a user')
 
         choice = eval(input('Enter your choice : '))
         if choice == 1:
@@ -129,6 +162,10 @@ def instabot():
         elif choice == 4:
             name = input('Enter the username')
             get_user_post(name)
+
+        elif choice == 5:
+            name = input('Enter the username')
+            like_post(name)
 
         else:
             print('You did not enter a valid choice')
