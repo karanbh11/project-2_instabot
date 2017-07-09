@@ -47,7 +47,8 @@ def get_user_info(username):
     if user_id is None:
         print('The user does not exist')
         exit()
-    req_url = BASE_URL + 'users/' + user_id + '?access_token=' + ACCESS_TOKEN
+    req_url = BASE_URL + 'users/' + user_id + '/?access_token=' + ACCESS_TOKEN
+    print(req_url)
     user_info = requests.get(req_url).json()
 
     # Printing the user details in a readable way
@@ -63,4 +64,24 @@ def get_user_info(username):
         print('Status code other than 200 received!')
 
 
-get_user_info('prskntshrma')
+# Defining the menu function of the instabot
+def instabot():
+    while True:
+        print('\n')
+        print('Hello and welcome to Instabot!!!!!!!!')
+        print('You can perform the following functions....')
+        print('1. Get your own details')
+        print('2. Get details of another user by username')
+
+        choice = eval(input('Enter your choice : '))
+        if choice == 1:
+            self_info()
+
+        elif choice == 2:
+            name = input('Enter the username : ')
+            get_user_info(name)
+
+        else:
+            print('You did not enter a valid choice')
+
+instabot()
