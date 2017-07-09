@@ -187,48 +187,59 @@ def instabot():
     while True:
         print('\n')
         print('Hello and welcome to Instabot!!!!!!!!')
-        print('You can perform the following functions....')
-        print('1. Get your own details')
-        print('2. Get details of another user by username')
-        print('3. Get your own recent post')
-        print('4. Get the recent post of a user by username')
-        print('5. Like the recent post of a user')
-        print('6. Comment on the recent post of a user')
-        print('7. Delete negative comments from the recent pot of a user')
-        print('8. Exit')
+        print('Whom do you want to use the application for ??? \nEnter \'self\' or username : ')
+        user = input()
+        if user == 'self':
+            while True:
+                print('You can perform the following functions....')
+                print('1. Get your own details')
+                print('2. Get your own recent post')
+                print('3. Get to the previous menu')
+                choice = eval(input('Enter your choice'))
+                if choice == 1:
+                    self_info()
 
-        choice = eval(input('Enter your choice : '))
-        if choice == 1:
-            self_info()
+                elif choice == 2:
+                    get_own_post()
 
-        elif choice == 2:
-            name = input('Enter the username : ')
-            get_user_info(name)
+                elif choice == 3:
+                    break
 
-        elif choice == 3:
-            get_own_post()
-
-        elif choice == 4:
-            name = input('Enter the username')
-            get_user_post(name)
-
-        elif choice == 5:
-            name = input('Enter the username')
-            like_post(name)
-
-        elif choice == 6:
-            name = input('Enter the username')
-            post_a_comment(name)
-
-        elif choice == 7:
-            name = input('Enter the username')
-            delete_negative_comment(name)
-
-        elif choice == 8:
-            exit()
+                else:
+                    print('You did not enter a valid choice!')
 
         else:
-            print('You did not enter a valid choice')
+            while True:
+                print('You can perform the following functions....')
+                print('1. Get the details of the user')
+                print('2. Get the recent post of a user by username')
+                print('3. Like the recent post of a user')
+                print('4. Comment on the recent post of a user')
+                print('5. Delete negative comments from the recent pot of a user')
+                print('6. Get back to the previous menu')
+
+                choice = eval(input('Enter your choice : '))
+
+                if choice == 1:
+                    get_user_info(user)
+
+                elif choice == 2:
+                    get_user_post(user)
+
+                elif choice == 3:
+                    like_post(user)
+
+                elif choice == 4:
+                    post_a_comment(user)
+
+                elif choice == 5:
+                    delete_negative_comment(user)
+
+                elif choice == 6:
+                    break
+
+                else:
+                    print('You did not enter a valid choice')
 
 
 instabot()
