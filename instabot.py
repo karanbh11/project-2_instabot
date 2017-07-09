@@ -126,7 +126,6 @@ def get_post_id(username):
 def like_post(username):
     media_id = get_post_id(username)
     req_url = BASE_URL + 'media/' + media_id + '/likes'
-    print(req_url)
     payload = {"access_token": ACCESS_TOKEN}
     post_a_like = requests.post(req_url, payload).json()
     if post_a_like['meta']['code'] == 200:
@@ -134,6 +133,20 @@ def like_post(username):
     else:
         print('Your like was unsuccessful. Try again!')
 
+
+# Defining a function to post a comment on the recent post of a user
+def post_a_comment(username):
+    media_id = get_post_id(username)
+    comment = input("Your comment: ")
+    payload = {"access_token": ACCESS_TOKEN, "text": comment}
+    req_url = BASE_URL + 'media/' + media_id + '/comments'
+
+    make_comment = requests.post(req_url, payload).json()
+
+    if make_comment['meta']['code'] == 200:
+        print("Successfully added a new comment!")
+    else:
+        print("Unable to add comment. Try again!")
 
 
 # Defining the menu function of the instabot
@@ -147,6 +160,7 @@ def instabot():
         print('3. Get your own recent post')
         print('4. Get the recent post of a user by username')
         print('5. Like the recent post of a user')
+        print('6. Comment on the recent post of a user')
 
         choice = eval(input('Enter your choice : '))
         if choice == 1:
@@ -166,6 +180,10 @@ def instabot():
         elif choice == 5:
             name = input('Enter the username')
             like_post(name)
+
+        elif choice == 6:
+            name = input('Enter the username')
+            post_a_comment(name)
 
         else:
             print('You did not enter a valid choice')
