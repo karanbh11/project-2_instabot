@@ -1,5 +1,7 @@
 # Importing requests library to facilitate the access of data in our program from the internet
 import requests
+import urllib
+
 
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
 ACCESS_TOKEN = '745963540.3ed3194.7c6b0edac759468fbc4eed4671259161'
@@ -64,6 +66,23 @@ def get_user_info(username):
         print('Status code other than 200 received!')
 
 
+# Defining the function to get our own recent post
+def get_own_post():
+    req_url = BASE_URL + 'users/self/media/recent/?access_token=' + ACCESS_TOKEN
+    media_self = requests.get(req_url).json()
+
+    if media_self['meta']['code'] == 200:
+        if len(media_self['data']):
+            image_name = media_self['data'][0]['id'] + '.jpeg'
+            image_url = media_self['data'][0]['images']['standard_resolution']['url']
+            urllib.urlretrieve(image_url, image_name)
+            print('Your image has been downloaded!')
+        else:
+            print('Post does not exist!')
+    else:
+        print('Status code other than 200 received!')
+
+
 # Defining the menu function of the instabot
 def instabot():
     while True:
@@ -72,6 +91,7 @@ def instabot():
         print('You can perform the following functions....')
         print('1. Get your own details')
         print('2. Get details of another user by username')
+        print('3. Get your own recent post')
 
         choice = eval(input('Enter your choice : '))
         if choice == 1:
@@ -81,7 +101,11 @@ def instabot():
             name = input('Enter the username : ')
             get_user_info(name)
 
+        elif choice == 3:
+            get_own_post()
+
         else:
             print('You did not enter a valid choice')
+
 
 instabot()
