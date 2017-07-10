@@ -146,6 +146,20 @@ def like_post(username):
     else:
         print('Your like was unsuccessful. Try again!')
 
+# Defining a function to get the list of comments on the recent post
+def comment_list(username):
+    post_id = get_post_id(username)
+    req_url = BASE_URL + 'media/' + post_id + '/comments?access_token=' + ACCESS_TOKEN
+    comments_here = requests.get(req_url).json()
+    print('The comments on this post are : \n')
+    if comments_here['meta']['code'] == 200:
+        for i in range(len(comments_here['data'])):
+            print(comments_here['data'][i]['from']['username'], end=' : ')
+            print(comments_here['data'][i]['text'])
+            print()
+    else:
+        print('Status code other than 200!!!')
+
 
 # Defining a function to post a comment on the recent post of a user
 def post_a_comment(username):
@@ -225,9 +239,10 @@ def instabot():
                 print('1. Get the details of the user')
                 print('2. Get the recent post of the user')
                 print('3. Like the recent post of a user')
-                print('4. Comment on the recent post of a user')
-                print('5. Delete negative comments from the recent pot of a user')
-                print('6. Get back to the previous menu')
+                print('4. Get the list of comments on the recent post of the user')
+                print('5. Comment on the recent post of a user')
+                print('6. Delete negative comments from the recent pot of a user')
+                print('7. Get back to the previous menu')
 
                 choice = eval(input('Enter your choice : '))
 
@@ -241,12 +256,15 @@ def instabot():
                     like_post(user)
 
                 elif choice == 4:
-                    post_a_comment(user)
+                    comment_list(user)
 
                 elif choice == 5:
-                    delete_negative_comment(user)
+                    post_a_comment(user)
 
                 elif choice == 6:
+                    delete_negative_comment(user)
+
+                elif choice == 7:
                     break
 
                 else:
