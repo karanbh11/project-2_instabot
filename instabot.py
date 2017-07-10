@@ -3,10 +3,13 @@ import requests
 # Importing Textblob library to analyze and delete negative comments
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
+# Importing urllib3 library for downloading posts in python 3 program
 import urllib3
 # Importing tkinter and PIL to display image or post
 import tkinter as tk
 from PIL import ImageTk, Image
+# Importing matplotlib library for plotting hash-tag(#) trends in form of pie-charts
+import matplotlib.pyplot as plt
 
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
 ACCESS_TOKEN = '745963540.3ed3194.7c6b0edac759468fbc4eed4671259161'
@@ -244,6 +247,50 @@ def delete_negative_comment(username):
         print('Status code other than 200 received!')
 
 
+count = [0, 0, 0, 0, 0]
+name = ['', '', '', '', '']
+
+
+# Defining a function to count tags by name and plot them
+def tag_count_plot():
+    tag_analysis()
+    plot()
+
+
+def tag_analysis():
+    i = 0
+    print('Maximum of five tags allowed...!!!')
+    while True:
+        tag = input('Enter the tag to be evaluated : ')
+        name[i] = tag
+        req_url = BASE_URL + 'tags/' + tag + '?access_token=' + ACCESS_TOKEN
+        tag_info = requests.get(req_url).json()
+        count[i] = tag_info['data']['media_count']
+        print('Do you want to evaluate another tag')
+        ans = input()
+        i = i + 1
+        if ans == 'n':
+            break
+        elif ans == 'y':
+            continue
+        else:
+            exit()
+
+        print(count)
+
+
+def plot():
+    labels = name
+    sizes = count
+    explode = (0.1, 0.1, 0.1, 0.1, 0.1)
+
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.show()
+
+
 # Defining the menu function of the instabot
 def instabot():
     while True:
@@ -286,7 +333,8 @@ def instabot():
                 print('4. Get the list of comments on the recent post of the user')
                 print('5. Comment on the recent post of a user')
                 print('6. Delete negative comments from the recent post of a user')
-                print('7. Get back to the previous menu')
+                print('7. Plot the trends of entered hash-tags(#)')
+                print('8. Get back to the previous menu')
 
                 choice = eval(input('Enter your choice : '))
 
@@ -309,6 +357,9 @@ def instabot():
                     delete_negative_comment(user)
 
                 elif choice == 7:
+                    tag_count_plot()
+
+                elif choice == 8:
                     break
 
                 else:
