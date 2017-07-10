@@ -146,6 +146,7 @@ def like_post(username):
     else:
         print('Your like was unsuccessful. Try again!')
 
+
 # Defining a function to get the list of comments on the recent post
 def comment_list(username):
     post_id = get_post_id(username)
@@ -179,18 +180,19 @@ def post_a_comment(username):
 # Defining a function to delete negative comments from the recent post of a user
 def delete_negative_comment(username):
     media_id = get_post_id(username)
-    req_url = BASE_URL + 'media/' + media_id + '/comments/?access_token=%s' + ACCESS_TOKEN
+    req_url = BASE_URL + 'media/' + media_id + '/comments/?access_token=' + ACCESS_TOKEN
+    print(req_url)
     comment_info = requests.get(req_url).json()
 
     if comment_info['meta']['code'] == 200:
         if len(comment_info['data']):
-            for x in range(0, len(comment_info['data'])):
-                comment_id = comment_info['data'][x]['id']
-                comment_text = comment_info['data'][x]['text']
+            for i in range(0, len(comment_info['data'])):
+                comment_id = comment_info['data'][i]['id']
+                comment_text = comment_info['data'][i]['text']
                 blob = TextBlob(comment_text, analyzer=NaiveBayesAnalyzer())
                 if blob.sentiment.p_neg > blob.sentiment.p_pos:
                     print('Negative comment : ' + comment_text)
-                    delete_url = BASE_URL + 'media/' + media_id + '/comments/' + comment_id + '/?access_token=' + \
+                    delete_url = BASE_URL + 'media/' + media_id + '/comments/' + comment_id + '?access_token=' + \
                                  ACCESS_TOKEN
                     delete_info = requests.delete(delete_url).json()
 
@@ -211,7 +213,8 @@ def instabot():
     while True:
         print('\n')
         print('Hello and welcome to Instabot!!!!!!!!')
-        print('Whom do you want to use the application for ??? \nEnter \'self\' or username : ')
+        print('Whom do you want to use the application for ??? \nEnter \'self\'(For own) or username(For another '
+              'user) or \'exit\' to exit : ')
         user = input()
         if user == 'self':
             while True:
@@ -232,6 +235,9 @@ def instabot():
                 else:
                     print('You did not enter a valid choice!')
 
+        elif user == 'exit':
+            exit(code='You closed the application')
+
         else:
             while True:
                 print('User ID is : ', get_user_id(user))
@@ -241,7 +247,7 @@ def instabot():
                 print('3. Like the recent post of a user')
                 print('4. Get the list of comments on the recent post of the user')
                 print('5. Comment on the recent post of a user')
-                print('6. Delete negative comments from the recent pot of a user')
+                print('6. Delete negative comments from the recent post of a user')
                 print('7. Get back to the previous menu')
 
                 choice = eval(input('Enter your choice : '))
