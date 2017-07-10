@@ -83,6 +83,7 @@ def get_own_post():
             f.write(response.data)
             f.close()
             print('Your post was downloaded')
+            print('Media Id is : ', media_self['data'][0]['id'])
         else:
             print('Post does not exist!')
     else:
@@ -107,6 +108,7 @@ def get_user_post(username):
             f.write(response.data)
             f.close()
             print('Your post was downloaded')
+            print('Media ID is : ', media_user['data'][0]['id'])
         else:
             print('Post does not exist!')
     else:
@@ -218,6 +220,7 @@ def instabot():
 
         else:
             while True:
+                print('User ID is : ', get_user_id(user))
                 print('You can perform the following functions....')
                 print('1. Get the details of the user')
                 print('2. Get the recent post of the user')
