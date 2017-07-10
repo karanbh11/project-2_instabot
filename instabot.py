@@ -4,6 +4,9 @@ import requests
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
 import urllib3
+# Importing tkinter and PIL to display image or post
+import tkinter as tk
+from PIL import ImageTk, Image
 
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
 ACCESS_TOKEN = '745963540.3ed3194.7c6b0edac759468fbc4eed4671259161'
@@ -68,6 +71,27 @@ def get_user_info(username):
         print('Status code other than 200 received!')
 
 
+# Function to display image
+def display(path):
+    # This creates the main window of an application
+    window = tk.Tk()
+    window.title("Join")
+    window.geometry("500x500")
+    window.configure(background='grey')
+
+    # Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
+    img = ImageTk.PhotoImage(Image.open(path))
+
+    # The Label widget is a standard Tkinter widget used to display a text or image on the screen.
+    panel = tk.Label(window, image=img)
+
+    # The Pack geometry manager packs widgets in rows or columns.
+    panel.pack(side="bottom", fill="both", expand="yes")
+
+    # Start the GUI
+    window.mainloop()
+
+
 # Defining the function to get our own recent post
 def get_own_post():
     req_url = BASE_URL + 'users/self/media/recent/?access_token=' + ACCESS_TOKEN
@@ -83,6 +107,12 @@ def get_own_post():
             f.write(response.data)
             f.close()
             print('Your post was downloaded')
+            dis = input("Do you want to display the image.. Enter \'y\' for yes and \'n\' for no : ")
+            if dis == 'y':
+                print("do click the image window below to see after pressing y ")
+                display('own_post.jpg')
+            else:
+                pass
             print('Media Id is : ', media_self['data'][0]['id'])
         else:
             print('Post does not exist!')
@@ -108,6 +138,12 @@ def get_user_post(username):
             f.write(response.data)
             f.close()
             print('Your post was downloaded')
+            dis = input("Do you want to display the image.. Enter \'y\' for yes and \'n\' for no : ")
+            if dis == 'y':
+                print("do click the image window below to see after pressing y ")
+                display('user_post.jpg')
+            else:
+                pass
             print('Media ID is : ', media_user['data'][0]['id'])
         else:
             print('Post does not exist!')
@@ -213,6 +249,8 @@ def instabot():
     while True:
         print('\n')
         print('Hello and welcome to Instabot!!!!!!!!')
+        print('Only self and users in the sandbox can be accessed...')
+        print('Sandbox test user \n[eviledmpredator]')
         print('Whom do you want to use the application for ??? \nEnter \'self\'(For own) or username(For another '
               'user) or \'exit\' to exit : ')
         user = input()
