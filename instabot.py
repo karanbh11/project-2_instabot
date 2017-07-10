@@ -3,7 +3,7 @@ import requests
 # Importing Textblob library to analyze and delete negative comments
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
-import urllib
+import urllib3
 
 # Declaring the access token and the base URL as global variables as the have to be used multiple times
 ACCESS_TOKEN = '745963540.3ed3194.7c6b0edac759468fbc4eed4671259161'
@@ -75,10 +75,14 @@ def get_own_post():
 
     if media_self['meta']['code'] == 200:
         if len(media_self['data']):
-            image_name = media_self['data'][0]['id'] + '.jpeg'
-            image_url = media_self['data'][0]['images']['standard_resolution']['url']
-            urllib.urlretrieve(image_url, image_name)
-            print('Your image has been downloaded!')
+            rec_img = media_self['data'][0]['images']['standard_resolution']['url']
+            urllib3.disable_warnings()
+            conn = urllib3.PoolManager()
+            response = conn.request('GET', rec_img)
+            f = open('own_post.jpg', 'wb')
+            f.write(response.data)
+            f.close()
+            print('Your post was downloaded')
         else:
             print('Post does not exist!')
     else:
@@ -95,10 +99,14 @@ def get_user_post(username):
     media_user = requests.get(req_url).json()
     if media_user['meta']['code'] == 200:
         if len(media_user['data']):
-            image_name = media_user['data'][0]['id'] + '.jpeg'
-            image_url = media_user['data'][0]['images']['standard_resolution']['url']
-            urllib.urlretrieve(image_url, image_name)
-            print('Your image has been downloaded!')
+            rec_img = media_user['data'][0]['images']['standard_resolution']['url']
+            urllib3.disable_warnings()
+            conn = urllib3.PoolManager()
+            response = conn.request('GET', rec_img)
+            f = open('user_post.jpg', 'wb')
+            f.write(response.data)
+            f.close()
+            print('Your post was downloaded')
         else:
             print('Post does not exist!')
     else:
@@ -195,7 +203,7 @@ def instabot():
                 print('1. Get your own details')
                 print('2. Get your own recent post')
                 print('3. Get to the previous menu')
-                choice = eval(input('Enter your choice'))
+                choice = eval(input('Enter your choice : '))
                 if choice == 1:
                     self_info()
 
@@ -212,7 +220,7 @@ def instabot():
             while True:
                 print('You can perform the following functions....')
                 print('1. Get the details of the user')
-                print('2. Get the recent post of a user by username')
+                print('2. Get the recent post of the user')
                 print('3. Like the recent post of a user')
                 print('4. Comment on the recent post of a user')
                 print('5. Delete negative comments from the recent pot of a user')
