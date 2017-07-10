@@ -274,7 +274,7 @@ def tag_analysis():
         elif ans == 'y':
             continue
         else:
-            exit()
+            exit(code='Can\'t you enter correct answer !! Now restart the application ')
 
         print(count)
 
